@@ -40,6 +40,39 @@ export async function listArticles(params?: {
   return res.json();
 }
 
+export interface ArticleInput {
+  title: string;
+  summary: string;
+  category: string;
+  tags: string;
+  content: string;
+}
+
+export async function createArticle(input: ArticleInput): Promise<Article> {
+  const res = await fetch(`${API_BASE}/api/articles`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) throw new Error(`Failed to create article: ${res.status}`);
+  return res.json();
+}
+
+export async function updateArticle(slug: string, input: Partial<ArticleInput>): Promise<Article> {
+  const res = await fetch(`${API_BASE}/api/articles/${slug}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) throw new Error(`Failed to update article: ${res.status}`);
+  return res.json();
+}
+
+export async function deleteArticle(slug: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/articles/${slug}`, { method: "DELETE" });
+  if (!res.ok) throw new Error(`Failed to delete article: ${res.status}`);
+}
+
 export async function getArticle(slug: string): Promise<Article | null> {
   const res = await fetch(`${API_BASE}/api/articles/${slug}`, { cache: "no-store" });
   if (res.status === 404) return null;
