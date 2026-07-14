@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import { ArrowLeft } from "lucide-react";
 import { getArticle } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
+import { ArticleActions } from "@/components/article-actions";
 
 export default async function ArticlePage({
   params,
@@ -17,12 +18,15 @@ export default async function ArticlePage({
 
   return (
     <article className="space-y-6">
-      <Link
-        href="/"
-        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" /> 回文章列表
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" /> 回文章列表
+        </Link>
+        <ArticleActions slug={article.slug} />
+      </div>
 
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">{article.title}</h1>

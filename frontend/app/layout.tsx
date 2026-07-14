@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { BookOpen } from "lucide-react";
+import { BookOpen, PenLine } from "lucide-react";
 import { listCategories, type CategoryCount } from "@/lib/api";
 import { Sidebar } from "@/components/sidebar";
 import "./globals.css";
@@ -27,6 +27,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <BookOpen className="h-5 w-5 text-primary" />
             <Link href="/" className="font-semibold">
               Tera&apos;s Tech Wiki
+            </Link>
+            <Link
+              href="/new"
+              className="ml-auto inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              <PenLine className="h-4 w-4" /> 新增文章
             </Link>
           </div>
         </header>
