@@ -1,16 +1,30 @@
-# Tera's Tech Wiki
+# My Tech Wiki
 
-個人技術 wiki：存放文章、筆記與技術文件。
+**English** | [繁體中文](./README.zh-TW.md)
 
-## 技術棧
+A personal tech wiki for articles, notes, and technical documentation.
 
-- **前端**：Next.js 15 (App Router) + TypeScript + Tailwind CSS v4 + shadcn/ui 風格元件
-- **後端**：FastAPI + SQLAlchemy 2.0（開發用 SQLite，可切換 PostgreSQL）
-- **內容格式**：Markdown（react-markdown + remark-gfm 渲染）
+![Next.js](https://img.shields.io/badge/Next.js_15-black?logo=next.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_v4-06B6D4?logo=tailwindcss&logoColor=white)
+![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-black?logo=shadcnui&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy_2.0-D71F00?logo=sqlalchemy&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
+![Markdown](https://img.shields.io/badge/Markdown-000000?logo=markdown&logoColor=white)
 
-## 開發
+## Development
 
-### 後端（port 8000）
+### Quick start (root)
+
+```bash
+pnpm install          # install concurrently
+pnpm install:web      # install frontend deps
+pnpm install:api      # create venv + install backend deps
+pnpm dev              # run FastAPI (8000) + Next.js (3000) together
+```
+
+### Backend only (port 8000)
 
 ```bash
 cd backend
@@ -19,34 +33,35 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-API 文件：http://localhost:8000/docs
+API docs: http://localhost:8000/docs
 
-### 前端（port 3000）
+### Frontend only (port 3000)
 
 ```bash
 cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
-### 測試
+### Tests
 
 ```bash
-cd backend && pytest
+pnpm test   # or: cd backend && pytest
 ```
 
 ## API
 
-| Method | Path | 說明 |
+| Method | Path | Description |
 |---|---|---|
-| GET | /api/articles?q=&tag= | 文章列表 / 搜尋 |
-| GET | /api/articles/{slug} | 單篇文章 |
-| POST | /api/articles | 新增文章 |
-| PUT | /api/articles/{slug} | 更新文章 |
-| DELETE | /api/articles/{slug} | 刪除文章 |
+| GET | /api/articles?q=&tag=&category= | List / search articles |
+| GET | /api/articles/{slug} | Get one article |
+| POST | /api/articles | Create article |
+| PUT | /api/articles/{slug} | Update article |
+| DELETE | /api/articles/{slug} | Delete article |
+| GET | /api/categories | Category counts |
 
-## 環境變數
+## Environment variables
 
-- `DATABASE_URL`（後端）：預設 `sqlite:///./wiki.db`，正式環境用 `postgresql+psycopg://...`
-- `CORS_ORIGINS`（後端）：預設 `http://localhost:3000`
-- `NEXT_PUBLIC_API_BASE`（前端）：預設 `http://localhost:8000`
+- `DATABASE_URL` (backend): defaults to `sqlite:///./wiki.db`; use `postgresql+psycopg://...` in production
+- `CORS_ORIGINS` (backend): defaults to `http://localhost:3000`
+- `NEXT_PUBLIC_API_BASE` (frontend): defaults to `http://localhost:8000`
