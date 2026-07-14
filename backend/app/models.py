@@ -13,6 +13,7 @@ class Article(Base):
     slug: Mapped[str] = mapped_column(String(200), unique=True, index=True)
     title: Mapped[str] = mapped_column(String(200))
     summary: Mapped[str] = mapped_column(String(500), default="")
+    category: Mapped[str] = mapped_column(String(50), default="", index=True)  # e.g. Frontend, Backend
     content: Mapped[str] = mapped_column(Text)  # Markdown
     tags: Mapped[str] = mapped_column(String(200), default="")  # comma-separated
     created_at: Mapped[datetime] = mapped_column(

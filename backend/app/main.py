@@ -19,6 +19,7 @@ app.add_middleware(
 )
 
 app.include_router(articles.router)
+app.include_router(articles.categories_router)
 
 
 @app.get("/api/health")

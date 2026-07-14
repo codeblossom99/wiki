@@ -55,6 +55,24 @@ def test_crud_flow():
     assert client.get(f"/api/articles/{slug}").status_code == 404
 
 
+def test_category_filter_and_listing():
+    client.post("/api/articles", json={"title": "React Notes", "category": "Frontend"})
+    client.post("/api/articles", json={"title": "FastAPI Notes", "category": "Backend"})
+    client.post("/api/articles", json={"title": "More React", "category": "Frontend"})
+    client.post("/api/articles", json={"title": "No Category"})
+
+    # filter articles by category
+    assert len(client.get("/api/articles", params={"category": "Frontend"}).json()) == 2
+    assert len(client.get("/api/articles", params={"category": "Backend"}).json()) == 1
+
+    # category counts, empty category excluded
+    cats = client.get("/api/categories").json()
+    assert cats == [
+        {"name": "Backend", "count": 1},
+        {"name": "Frontend", "count": 2},
+    ]
+
+
 def test_duplicate_title_gets_unique_slug():
     a = client.post("/api/articles", json={"title": "Same Title"}).json()
     b = client.post("/api/articles", json={"title": "Same Title"}).json()

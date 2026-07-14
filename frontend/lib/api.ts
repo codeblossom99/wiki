@@ -5,8 +5,14 @@ export interface ArticleListItem {
   slug: string;
   title: string;
   summary: string;
+  category: string;
   tags: string;
   updated_at: string;
+}
+
+export interface CategoryCount {
+  name: string;
+  count: number;
 }
 
 export interface Article extends ArticleListItem {
@@ -14,10 +20,21 @@ export interface Article extends ArticleListItem {
   created_at: string;
 }
 
-export async function listArticles(params?: { q?: string; tag?: string }): Promise<ArticleListItem[]> {
+export async function listCategories(): Promise<CategoryCount[]> {
+  const res = await fetch(`${API_BASE}/api/categories`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Failed to list categories: ${res.status}`);
+  return res.json();
+}
+
+export async function listArticles(params?: {
+  q?: string;
+  tag?: string;
+  category?: string;
+}): Promise<ArticleListItem[]> {
   const qs = new URLSearchParams();
   if (params?.q) qs.set("q", params.q);
   if (params?.tag) qs.set("tag", params.tag);
+  if (params?.category) qs.set("category", params.category);
   const res = await fetch(`${API_BASE}/api/articles?${qs}`, { cache: "no-store" });
   if (!res.ok) throw new Error(`Failed to list articles: ${res.status}`);
   return res.json();

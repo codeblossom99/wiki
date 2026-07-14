@@ -8,14 +8,14 @@ import { SearchBar } from "@/components/search-bar";
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; tag?: string }>;
+  searchParams: Promise<{ q?: string; tag?: string; category?: string }>;
 }) {
-  const { q, tag } = await searchParams;
+  const { q, tag, category } = await searchParams;
 
   let articles: Awaited<ReturnType<typeof listArticles>> = [];
   let apiError = false;
   try {
-    articles = await listArticles({ q, tag });
+    articles = await listArticles({ q, tag, category });
   } catch {
     apiError = true;
   }
@@ -32,9 +32,11 @@ export default async function HomePage({
         </p>
       )}
 
+      {category && <h2 className="text-lg font-semibold">分類：{category}</h2>}
+
       {!apiError && articles.length === 0 && (
         <p className="text-sm text-muted-foreground">
-          {q || tag ? "找不到符合的文章。" : "還沒有文章，用 API 新增第一篇吧。"}
+          {q || tag || category ? "找不到符合的文章。" : "還沒有文章，用 API 新增第一篇吧。"}
         </p>
       )}
 
