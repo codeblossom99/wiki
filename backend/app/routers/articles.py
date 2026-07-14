@@ -1,13 +1,25 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from slugify import slugify
-from sqlalchemy import or_, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..models import Article
-from ..schemas import ArticleCreate, ArticleListItem, ArticleOut, ArticleUpdate
+from ..schemas import ArticleCreate, ArticleListItem, ArticleOut, ArticleUpdate, CategoryCount
 
 router = APIRouter(prefix="/api/articles", tags=["articles"])
+categories_router = APIRouter(prefix="/api/categories", tags=["categories"])
+
+
+@categories_router.get("", response_model=list[CategoryCount])
+def list_categories(db: Session = Depends(get_db)):
+    rows = db.execute(
+        select(Article.category, func.count(Article.id))
+        .where(Article.category != "")
+        .group_by(Article.category)
+        .order_by(Article.category)
+    ).all()
+    return [CategoryCount(name=name, count=count) for name, count in rows]
 
 
 def _unique_slug(db: Session, title: str, exclude_id: int | None = None) -> str:
@@ -27,6 +39,7 @@ def _unique_slug(db: Session, title: str, exclude_id: int | None = None) -> str:
 def list_articles(
     q: str | None = Query(default=None, description="search in title/summary/content"),
     tag: str | None = None,
+    category: str | None = None,
     db: Session = Depends(get_db),
 ):
     stmt = select(Article).order_by(Article.updated_at.desc())
@@ -37,6 +50,8 @@ def list_articles(
         )
     if tag:
         stmt = stmt.where(Article.tags.ilike(f"%{tag}%"))
+    if category:
+        stmt = stmt.where(Article.category == category)
     return db.scalars(stmt).all()
 
 

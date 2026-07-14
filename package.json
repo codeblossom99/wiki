@@ -1,0 +1,17 @@
+{
+  "name": "wiki",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"pnpm dev:api\" \"pnpm dev:web\"",
+    "dev:web": "pnpm --dir frontend dev",
+    "dev:api": "backend/.venv/bin/uvicorn app.main:app --reload --app-dir backend",
+    "build": "pnpm --dir frontend build",
+    "test": "backend/.venv/bin/pytest backend/tests",
+    "install:web": "pnpm --dir frontend install",
+    "install:api": "python3 -m venv backend/.venv && backend/.venv/bin/pip install -r backend/requirements.txt"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
