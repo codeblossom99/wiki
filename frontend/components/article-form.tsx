@@ -6,6 +6,7 @@ import { createArticle, updateArticle, type Article, type ArticleInput } from "@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MarkdownEditor } from "@/components/markdown-editor";
+import { setApiKey, hasApiKey } from "@/lib/api";
 
 export function ArticleForm({ article }: { article?: Article }) {
   const router = useRouter();
@@ -18,6 +19,7 @@ export function ArticleForm({ article }: { article?: Article }) {
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [key, setKey] = useState("");
 
   const set = (key: keyof ArticleInput) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -41,6 +43,15 @@ export function ArticleForm({ article }: { article?: Article }) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
+      {!hasApiKey() && (
+        <Input
+          type="password"
+          placeholder="API Key"
+          value={key}
+          onChange={(e) => setKey(e.target.value)}
+          onBlur={() => setApiKey(key)}
+        />
+      )}
       <Input required placeholder="標題" value={form.title} onChange={set("title")} />
 
       <div className="grid gap-4 sm:grid-cols-2">

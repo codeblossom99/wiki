@@ -18,7 +18,7 @@ def fresh_db():
     yield
 
 
-client = TestClient(app)
+client = TestClient(app, headers={"X-API-Key": "dev-secret-key"})
 
 
 def test_health():
@@ -77,3 +77,8 @@ def test_duplicate_title_gets_unique_slug():
     a = client.post("/api/articles", json={"title": "Same Title"}).json()
     b = client.post("/api/articles", json={"title": "Same Title"}).json()
     assert a["slug"] != b["slug"]
+
+def test_write_requires_api_key():
+    no_key = TestClient(app)
+    r = no_key.post("/api/articles", json={"title": "Hacked"})
+    assert r.status_code == 401
