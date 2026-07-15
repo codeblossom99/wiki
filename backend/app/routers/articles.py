@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from ..models import Article
 from ..schemas import ArticleCreate, ArticleListItem, ArticleOut, ArticleUpdate, CategoryCount
+from ..auth import require_api_key
 
 router = APIRouter(prefix="/api/articles", tags=["articles"])
 categories_router = APIRouter(prefix="/api/categories", tags=["categories"])
@@ -63,7 +64,7 @@ def get_article(slug: str, db: Session = Depends(get_db)):
     return article
 
 
-@router.post("", response_model=ArticleOut, status_code=201)
+@router.post("", response_model=ArticleOut, status_code=201, dependencies=[Depends(require_api_key)])
 def create_article(payload: ArticleCreate, db: Session = Depends(get_db)):
     article = Article(slug=_unique_slug(db, payload.title), **payload.model_dump())
     db.add(article)
@@ -72,7 +73,7 @@ def create_article(payload: ArticleCreate, db: Session = Depends(get_db)):
     return article
 
 
-@router.put("/{slug}", response_model=ArticleOut)
+@router.put("/{slug}", response_model=ArticleOut, dependencies=[Depends(require_api_key)])
 def update_article(slug: str, payload: ArticleUpdate, db: Session = Depends(get_db)):
     article = db.scalar(select(Article).where(Article.slug == slug))
     if article is None:
@@ -87,7 +88,7 @@ def update_article(slug: str, payload: ArticleUpdate, db: Session = Depends(get_
     return article
 
 
-@router.delete("/{slug}", status_code=204)
+@router.delete("/{slug}", status_code=204, dependencies=[Depends(require_api_key)])
 def delete_article(slug: str, db: Session = Depends(get_db)):
     article = db.scalar(select(Article).where(Article.slug == slug))
     if article is None:

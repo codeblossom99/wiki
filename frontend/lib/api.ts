@@ -1,5 +1,9 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://localhost:8000";
 
+let apiKey = "";
+export function setApiKey(key: string) { apiKey = key; }
+export function hasApiKey() { return apiKey !== ""; }
+
 export interface ArticleListItem {
   id: number;
   slug: string;
@@ -51,7 +55,7 @@ export interface ArticleInput {
 export async function createArticle(input: ArticleInput): Promise<Article> {
   const res = await fetch(`${API_BASE}/api/articles`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "X-API-Key": apiKey },
     body: JSON.stringify(input),
   });
   if (!res.ok) throw new Error(`Failed to create article: ${res.status}`);
@@ -69,7 +73,7 @@ export async function updateArticle(slug: string, input: Partial<ArticleInput>):
 }
 
 export async function deleteArticle(slug: string): Promise<void> {
-  const res = await fetch(`${API_BASE}/api/articles/${slug}`, { method: "DELETE" });
+  const res = await fetch(`${API_BASE}/api/articles/${slug}`, { method: "DELETE", headers: { "X-API-Key": apiKey } });
   if (!res.ok) throw new Error(`Failed to delete article: ${res.status}`);
 }
 
